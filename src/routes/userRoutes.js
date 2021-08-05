@@ -10,4 +10,7 @@ const validateData = require('../middlewares/validation');
 router.route('/')
   .post(validateData(schemas.user),userControllerObj.signUpUser,errorHandler);
 
+router.route('/login')
+  .post(userControllerObj.loginUser,errorHandler);
+
 module.exports = router;
