@@ -14,5 +14,6 @@ router.route('/')
   .get(auth.authenticateToken,noteControllerObj.getNotes,errorHandler);
 
 router.route('/id/:id')
-  .put(auth.authenticateToken,validateData(schemas.note),noteControllerObj.updateNote,errorHandler)  
+  .put(auth.authenticateToken,validateData(schemas.note),noteControllerObj.updateNote,errorHandler)
+  .delete(auth.authenticateToken,noteControllerObj.deleteNote,errorHandler);  
 module.exports = router;

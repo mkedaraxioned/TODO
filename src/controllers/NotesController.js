@@ -45,6 +45,16 @@ class NoteController {
       next(error);
     }
   }
+
+  deleteNote = async (req,res,next) => {
+    try {
+      const note = await Note.findByIdAndDelete(req.params.id);
+      if(!note) return res.status(404).send({ message:'Note was not found' });
+      return res.send({msg:'Note successfully deleted'});
+    } catch (error) {
+      next(error);
+    }
+  }
  
 }
 
