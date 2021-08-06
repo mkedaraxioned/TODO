@@ -10,6 +10,12 @@ const schemas = {
     .required(),
     password: Joi.string()
     .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+  }),
+  note: Joi.object({
+    content: Joi.string(),
+    status: Joi.string()
+    .valid('incomplete','complete'),
+    onDate: Joi.date()
   })
 }
 
