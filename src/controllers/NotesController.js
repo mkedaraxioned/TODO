@@ -62,9 +62,22 @@ class NoteController {
 
   deleteNote = async (req,res,next) => {
     try {
-      const note = await Note.findByIdAndDelete(req.params.id);
-      if(!note) return res.status(404).send({ message:'Note was not found' });
-      return res.send({msg:'Note successfully deleted'});
+      const note = await Note.find({_id:req.params.id});
+      let accessGranted = false;
+      let statusOld,onDateOld;
+      note.forEach((noteData,i) => {
+        statusOld = noteData.status;
+        onDateOld = noteData.onDate;
+        if(noteData.user == res.locals.userEmail) accessGranted = true;    
+       });
+      if(!note) return res.status(404).send({ error:'Note was not found' });
+      if(accessGranted) {
+        const deletedNote = await Note.findByIdAndDelete(req.params.id);
+        if(!deletedNote) return res.status(404).send({ message:'Note was not found' });
+        return res.send({msg:'Note successfully deleted'});
+      }  else {
+        return res.status(401).send({error: 'Unauthorized Access denied'});
+      }
     } catch (error) {
       next(error);
     }
