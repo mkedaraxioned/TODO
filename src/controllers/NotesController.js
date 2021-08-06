@@ -28,21 +28,33 @@ class NoteController {
 
   updateNote = async (req,res,next) => {
     try {
-      const note = await Note.findById(req.params.id);
+      const note = await Note.find({_id:req.params.id});
+      let accessGranted = false;
+      let statusOld,onDateOld;
+      note.forEach((noteData,i) => {
+        statusOld = noteData.status;
+        onDateOld = noteData.onDate;
+        if(noteData.user == res.locals.userEmail) accessGranted = true;    
+       });
       if(!note) return res.status(404).send({ error:'Note was not found' });
-      if(req.body.content) return res.status(403).send({error:'Note content cannot be changed'});
-      if(new Date(req.body.onDate) <= new Date()) return res.status(403).send({error:'Past dates cannot be added'});      
+      if(accessGranted) {         
+        if(req.body.content) return res.status(403).send({error:'Note content cannot be changed'});
+        if(new Date(req.body.onDate) <= new Date()) return res.status(403).send({error:'Past dates cannot be added'});      
       const updateData = {
-        status:req.body.status ? req.body.status : note.status,
-        onDate: req.body.onDate ? req.body.onDate : note.onDate
+        status:req.body.status ? req.body.status : statusOld,
+        onDate: req.body.onDate ? req.body.onDate : onDateOld
       }
       const updatedNote = await Note.findByIdAndUpdate(req.params.id , updateData,{
-          new : true,
-          runValidators:true,
-          useFindAndModify:false
-        });
+        new : true,
+        runValidators:true,
+        useFindAndModify:false
+      });
       if(!updatedNote) return res.status(500).send({ error:'Internal server error' });  
       return res.status(200).send({msg:'Note updated',updatedNote});
+    }
+     else {
+      return res.status(401).send({error: 'Unauthorized Access denied'});
+    }
     } catch (error) {
       next(error);
     }
