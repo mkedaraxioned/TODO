@@ -23,6 +23,28 @@ class NoteController {
       next(error);
     }
   }
+
+  updateNote = async (req,res,next) => {
+    try {
+      const note = await Note.findById(req.params.id);
+      if(!note) return res.status(404).send({ error:'Note was not found' });
+      if(req.body.content) return res.status(403).send({error:'Note content cannot be changed'});
+      if(new Date(req.body.onDate) <= new Date()) return res.status(403).send({error:'Past dates cannot be added'});      
+      const updateData = {
+        status:req.body.status ? req.body.status : note.status,
+        onDate: req.body.onDate ? req.body.onDate : note.onDate
+      }
+      const updatedNote = await Note.findByIdAndUpdate(req.params.id , updateData,{
+          new : true,
+          runValidators:true,
+          useFindAndModify:false
+        });
+      if(!updatedNote) return res.status(500).send({ error:'Internal server error' });  
+      return res.status(200).send({msg:'Note updated',updatedNote});
+    } catch (error) {
+      next(error);
+    }
+  }
  
 }
 

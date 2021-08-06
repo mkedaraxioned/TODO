@@ -12,5 +12,7 @@ const auth = new AuthMiddleware();
 router.route('/')
   .post(auth.authenticateToken,validateData(schemas.note),noteControllerObj.addNote,errorHandler)
   .get(auth.authenticateToken,noteControllerObj.getNotes,errorHandler);
-  
+
+router.route('/id/:id')
+  .put(auth.authenticateToken,validateData(schemas.note),noteControllerObj.updateNote,errorHandler)  
 module.exports = router;
