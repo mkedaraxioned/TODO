@@ -14,6 +14,15 @@ class NoteController {
       next(error);
       }
   }
+
+  getNotes = async (req,res,next) => {
+    try {
+      const notes = await Note.find({},{__v:0});
+      return res.status(200).send({notes});
+    } catch (error) {
+      next(error);
+    }
+  }
  
 }
 

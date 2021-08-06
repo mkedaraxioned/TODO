@@ -10,6 +10,7 @@ const AuthMiddleware = require('./../middlewares/auth');
 const auth = new AuthMiddleware();
 
 router.route('/')
-  .post(auth.authenticateToken,validateData(schemas.note),noteControllerObj.addNote,errorHandler);
+  .post(auth.authenticateToken,validateData(schemas.note),noteControllerObj.addNote,errorHandler)
+  .get(auth.authenticateToken,noteControllerObj.getNotes,errorHandler);
   
 module.exports = router;
