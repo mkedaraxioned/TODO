@@ -18,7 +18,8 @@ class NoteController {
 
   getNotes = async (req,res,next) => {
     try {
-      const notes = await Note.find({},{__v:0});
+      const notes = await Note.find({user:res.locals.userEmail},{__v:0});
+      if(!notes) return res.status(404).send({ error:'No notes found' });
       return res.status(200).send({notes});
     } catch (error) {
       next(error);
