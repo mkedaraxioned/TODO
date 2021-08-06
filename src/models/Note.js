@@ -23,7 +23,7 @@ const noteSchema = new mongoose.Schema({
     type:String,
     default:Date.now
   },
-  user:{type:mongoose.Schema.Types.ObjectId,ref: 'User'}
+  user:String
 });
 
 //Model creation
