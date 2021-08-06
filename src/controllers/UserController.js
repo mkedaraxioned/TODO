@@ -19,16 +19,18 @@ class UserController {
 
   loginUser = async(req,res,next) => {
     try {
-      const user = await User.find({ email:req.body.email });
-      if(!user || user == null || user=="") return res.status(401).send({error:"Invalid credetials"});
-      user.forEach((suser,i)=> {
-        if(suser.password === req.body.password) {
-          const token = jwtAuthObj.generateAccessToken({email:req.body.email}); 
-          return res.status(200).send({ message:'success',token});   
-        } else {
-          return res.status(401).send({error:"Invalid credetials"});
-        }
-      });         
+      const { email, password } = req.body;
+      if (!email || !password) return res.status(401).send({error:'Invalid credentials'});    
+      const user = await User.findOne({ email }).select('+password');
+      if (!user) return res.status(401).send({error:'Invalid credentials'});
+       // Check if password is valid
+      const isMatch = await user.matchPassword(password);
+      if (isMatch) {
+        const token = jwtAuthObj.generateAccessToken({ email }); 
+        return res.status(200).send({ message:'Logged In',token}); 
+      } else {
+        return res.status(401).send({error:"Invalid credetials"});
+      }
     } catch (error) {
         next(error);
     }
