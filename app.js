@@ -46,6 +46,10 @@ mongoose.connect(DB,{
 // mount routes
 app.use('/api',routes);
 
+app.use((req, res, next) => {
+  return res.status(500).send({error: 'Internal Server error'});
+});
+
 //PORT ENVIRONMENT VARIABLE
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}..`));
