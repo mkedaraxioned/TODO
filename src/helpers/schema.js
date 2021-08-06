@@ -15,7 +15,8 @@ const schemas = {
     content: Joi.string(),
     status: Joi.string()
     .valid('incomplete','complete'),
-    onDate: Joi.date()
+    onDate: Joi.date(),
+    user: Joi.string()
   })
 }
 
